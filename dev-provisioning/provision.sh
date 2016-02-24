@@ -1,5 +1,5 @@
 #!/bin/bash
-export PROVISION_DIR=/tmp/dev-provisioning
+PROVISION_DIR=/tmp/dev-provisioning
 
 #
 # System wide adjustments
@@ -14,8 +14,8 @@ swapon /swapfile
 #
 #
 echo "Updating package list"
-sudo aptitude update
-sudo aptitude install -y unzip lubuntu-core file-roller xfce4-terminal chromium-browser python-lxml apt-transport-https ca-certificates
+sudo apt-get update
+sudo apt-get -y install unzip lubuntu-core file-roller xfce4-terminal chromium-browser python-lxml apt-transport-https ca-certificates
 
 ## Install JDK 8
 echo "Installing JDK8"
@@ -33,15 +33,49 @@ sudo apt-get -y install linux-image-extra-$(uname -r) apparmor linux-image-gener
 echo 'DOCKER_OPTS="--selinux-enabled -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock"' | sudo tee --append /etc/default/docker
 sudo service docker restart
 sudo gpasswd -a vagrant docker && newgrp docker
-#sudo docker daemon -H localhost:2375 &
 
-## Install dev tools (eclipse, sublime, maven)
-echo "Installing dev tools"
-$PROVISION_DIR/install-extras.sh
+#
+# Install sublime text editor
+#
+sudo add-apt-repository ppa:webupd8team/sublime-text-3
+sudo apt-get update
+sudo apt-get -y install sublime-text-installer
 
-## ENV
+#
+# Maven
+#
+echo Setting up $MVN
+wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
+unzip apache-maven-*-bin.zip -d /opt/ > /dev/null
+ln -s /opt/apache-maven-*/bin/mvn /usr/local/bin
+
+#
+# Eclipse, make executable link
+#
+echo Unpacking Eclipse
+wget https://eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/eclipse-jee-mars-1-linux-gtk-x86_64.tar.gz\&r=1 -O eclipse-jee-mars.tar.gz
+tar xzf eclipse*.tar.gz -C /opt/
+ln -s /opt/eclipse/eclipse /usr/local/bin
+
+#
+# SQL developer
+#
+#echo Setting up SQL Developer
+#unzip $SQL_ZIP > /dev/null
+#chmod +x /opt/sqldeveloper/sqldeveloper/bin/sqldeveloper
+#ln -s /opt/sqldeveloper/sqldeveloper/bin/sqldeveloper /usr/local/bin
+#mkdir -p /home/vagrant/.sqldeveloper/4.0.0
+#echo "SetJavaHome /usr/lib/jvm/java-8-oracle" > /home/vagrant/.sqldeveloper/4.0.0/product.conf
+
+# chown
+chown vagrant:vagrant /opt -R
+chown vagrant:vagrant /home/vagrant -R
 echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> /home/vagrant/.bashrc
 echo "export DOCKER_HOST=tcp://localhost:2375" >> /home/vagrant/.bashrc
+
+## Clean up
+rm -fr *.tar.gz *.zip
+
 
 # set timezone, locale too (for keyboard)?
 echo "Setting Swedish locale and timezone"

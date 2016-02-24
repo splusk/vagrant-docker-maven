@@ -38,10 +38,11 @@ sudo apt-get update
 sudo apt-get -y install sublime-text-installer
 
 ## Maven
-echo "Setting up MVN"
-wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
-unzip apache-maven-*-bin.zip -d /opt/ > /dev/null
-ln -s /opt/apache-maven-*/bin/mvn /usr/local/bin
+MVN_VERSION=3.3.9
+echo "Setting up apache-maven-$MVN_VERSION"
+wget http://www.eu.apache.org/dist/maven/maven-3/$MVN_VERSION/binaries/apache-maven-$MVN_VERSION-bin.zip
+unzip apache-maven-$MVN_VERSION-bin.zip -d /opt/ > /dev/null
+ln -s /opt/apache-maven-$MVN_VERSION/bin/mvn /usr/local/bin
 
 ## Eclipse, make executable link
 echo "Setting up Eclipse"

@@ -1,6 +1,4 @@
 #!/bin/bash
-PROVISION_DIR=/tmp/dev-provisioning
-
 #
 # System wide adjustments
 #
@@ -34,32 +32,24 @@ echo 'DOCKER_OPTS="--selinux-enabled -H tcp://0.0.0.0:2375 -H unix:///var/run/do
 sudo service docker restart
 sudo gpasswd -a vagrant docker && newgrp docker
 
-#
-# Install sublime text editor
-#
+## Install sublime text editor
 sudo add-apt-repository ppa:webupd8team/sublime-text-3
 sudo apt-get update
 sudo apt-get -y install sublime-text-installer
 
-#
-# Maven
-#
+## Maven
 echo Setting up $MVN
 wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
 unzip apache-maven-*-bin.zip -d /opt/ > /dev/null
 ln -s /opt/apache-maven-*/bin/mvn /usr/local/bin
 
-#
-# Eclipse, make executable link
-#
+## Eclipse, make executable link
 echo Unpacking Eclipse
 wget https://eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/eclipse-jee-mars-1-linux-gtk-x86_64.tar.gz\&r=1 -O eclipse-jee-mars.tar.gz
 tar xzf eclipse*.tar.gz -C /opt/
 ln -s /opt/eclipse/eclipse /usr/local/bin
 
-#
-# SQL developer
-#
+## SQL developer
 #echo Setting up SQL Developer
 #unzip $SQL_ZIP > /dev/null
 #chmod +x /opt/sqldeveloper/sqldeveloper/bin/sqldeveloper
@@ -67,17 +57,7 @@ ln -s /opt/eclipse/eclipse /usr/local/bin
 #mkdir -p /home/vagrant/.sqldeveloper/4.0.0
 #echo "SetJavaHome /usr/lib/jvm/java-8-oracle" > /home/vagrant/.sqldeveloper/4.0.0/product.conf
 
-# chown
-chown vagrant:vagrant /opt -R
-chown vagrant:vagrant /home/vagrant -R
-echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> /home/vagrant/.bashrc
-echo "export DOCKER_HOST=tcp://localhost:2375" >> /home/vagrant/.bashrc
-
-## Clean up
-rm -fr *.tar.gz *.zip
-
-
-# set timezone, locale too (for keyboard)?
+## set timezone, locale too (for keyboard)?
 echo "Setting Swedish locale and timezone"
 echo "If you want something else, run 'sudo dpkg-reconfigure tzdata'"
 echo "Europe/Stockholm" > /etc/timezone
@@ -85,17 +65,23 @@ dpkg-reconfigure -f noninteractive tzdata
 echo "Setting keyboard layout to swedish"
 setxkbmap se
 
-# can't rsync files, as the virtualbox share from windows 
-# has mode 777 on all files, owned by vagrant:vagrant
+## can't rsync files, as the virtualbox share from windows 
+## has mode 777 on all files, owned by vagrant:vagrant
 echo "Setting up Xfce terminal"
-cp -r $PROVISION_DIR/files/home/vagrant/.config /home/vagrant/
+cp -r /tmp/dev-provisioning/files/home/vagrant/.config /home/vagrant/
 echo "Setting autologin to vagrant user (password is vagrant, should you need it)"
 mkdir -p /etc/lightdm/lightdm.conf.d
-cp $PROVISION_DIR/files/etc/lightdm/lightdm.conf.d/* /etc/lightdm/lightdm.conf.d/
+cp /tmp/dev-provisioning/files/etc/lightdm/lightdm.conf.d/* /etc/lightdm/lightdm.conf.d/
+
+echo "export JAVA_HOME=/usr/lib/jvm/java-8-oracle" >> /home/vagrant/.bashrc
+echo "export DOCKER_HOST=tcp://localhost:2375" >> /home/vagrant/.bashrc
+chown vagrant:vagrant -R /opt
 chown vagrant:vagrant -R /home/vagrant
 
+## Clean up
+rm -fr *.tar.gz *.zip
+
 echo "Starting graphical login"
-# somehow, autologin isn't kicking in first time
+## somehow, autologin isn't kicking in first time
 service lightdm start
-#sleep 10
 service lightdm restart

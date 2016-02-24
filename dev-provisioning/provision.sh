@@ -38,20 +38,20 @@ sudo apt-get update
 sudo apt-get -y install sublime-text-installer
 
 ## Maven
-echo Setting up $MVN
+echo "Setting up MVN"
 wget http://www.eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.zip
 unzip apache-maven-*-bin.zip -d /opt/ > /dev/null
 ln -s /opt/apache-maven-*/bin/mvn /usr/local/bin
 
 ## Eclipse, make executable link
-echo Unpacking Eclipse
+echo "Setting up Eclipse"
 wget https://eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/mars/1/eclipse-jee-mars-1-linux-gtk-x86_64.tar.gz\&r=1 -O eclipse-jee-mars.tar.gz
 tar xzf eclipse*.tar.gz -C /opt/
 ln -s /opt/eclipse/eclipse /usr/local/bin
 
 ## SQL developer
-#echo Setting up SQL Developer
-#unzip $SQL_ZIP > /dev/null
+#echo "Setting up SQL Developer"
+#unzip sqldeveloper-*.zip -d /opt/ > /dev/null
 #chmod +x /opt/sqldeveloper/sqldeveloper/bin/sqldeveloper
 #ln -s /opt/sqldeveloper/sqldeveloper/bin/sqldeveloper /usr/local/bin
 #mkdir -p /home/vagrant/.sqldeveloper/4.0.0

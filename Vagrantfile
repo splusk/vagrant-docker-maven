@@ -18,7 +18,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
         dev.vm.provision "file", source: "dev-provisioning", destination: "/tmp/dev-provisioning"
         dev.vm.provision "shell", inline: "/bin/sh /tmp/dev-provisioning/provision.sh"
-        dev.vm.synced_folder "gc-crewplace", "/home/vagrant/gc-crewplace"
+        dev.vm.synced_folder "shared_folder", "/home/vagrant/share_folder"
     end
 
 end

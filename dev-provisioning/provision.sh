@@ -84,5 +84,5 @@ rm -fr *.tar.gz *.zip
 
 echo "Starting graphical login"
 ## somehow, autologin isn't kicking in first time
-service lightdm start
+#service lightdm start
 service lightdm restart
